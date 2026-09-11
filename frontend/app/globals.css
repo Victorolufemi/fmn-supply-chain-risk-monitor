@@ -1,0 +1,129 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /*
+   * Light theme only.
+   *
+   * tailwind.config.ts sets darkMode to "class", so the dark variants only apply
+   * under a .dark ancestor, which nothing ever adds. The app therefore renders
+   * light whatever the viewer's OS is set to. color-scheme: light additionally
+   * makes the browser paint its own chrome light -- form controls, scrollbars,
+   * and the canvas behind the page -- which Tailwind variants cannot reach.
+   */
+  :root {
+    color-scheme: light;
+
+    /* Chart colours. Recharts takes literal colour strings, so every series
+       references a token here rather than a hardcoded hex. */
+    --chart-ink: #1e293b;
+    --chart-grid: rgba(148, 163, 184, 0.25);
+
+    /* Gradient palette. Deliberately low-contrast: this is a decision tool, so
+       gradients sit behind the data as surface treatment and never compete with
+       the risk colours, which are the only colours carrying meaning. */
+    --grad-page: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 38%, #eef2ff 100%);
+    --grad-header: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.92) 0%,
+      rgba(248, 250, 252, 0.92) 55%,
+      rgba(238, 242, 255, 0.92) 100%
+    );
+    --grad-surface: linear-gradient(
+      160deg,
+      #ffffff 0%,
+      #fdfdff 55%,
+      #f8faff 100%
+    );
+    --grad-brand: linear-gradient(135deg, #4f46e5 0%, #0ea5e9 100%);
+    --grad-critical: linear-gradient(135deg, #e11d48 0%, #f97316 100%);
+    --grad-stockout: linear-gradient(135deg, #ea580c 0%, #f59e0b 100%);
+    --grad-overstock: linear-gradient(135deg, #0284c7 0%, #06b6d4 100%);
+    --grad-neutral: linear-gradient(135deg, #475569 0%, #94a3b8 100%);
+  }
+
+  /*
+   * clip, not hidden: it stops a decorative absolutely-positioned element (a
+   * hint popover sitting near the right edge) from extending the document's
+   * scroll width and producing a page-wide horizontal scrollbar, without turning
+   * the root into a scroll container -- which would break the sticky header.
+   * It must be set on html as well as body: the viewport propagates overflow
+   * from the root element, so clipping body alone leaves html scrollable.
+   * Deliberate overflow-x-auto regions, such as the SKU table, still scroll
+   * internally.
+   */
+  html,
+  body {
+    overflow-x: clip;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    /* The gradient lives on html so it paints the full viewport even when the
+       page is shorter than the screen, and does not tile when it is longer. */
+    background: var(--grad-page);
+    background-attachment: fixed;
+    min-height: 100%;
+  }
+
+  body {
+    @apply text-slate-900;
+    background: transparent;
+  }
+
+  /* Keep hint popovers inside the viewport on narrow screens. */
+  [role="tooltip"] {
+    max-width: min(16rem, calc(100vw - 2rem));
+  }
+
+  /* Tabular figures everywhere numbers are compared down a column. */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer components {
+  /* Card surface: a barely-there vertical wash, so stacked cards read as
+     distinct planes against the gradient page without heavier borders. */
+  .surface-gradient {
+    background: var(--grad-surface);
+  }
+
+  /* The 3px accent bar along the top edge of a KPI card. The colour comes from
+     an --accent custom property set per card. */
+  .accent-bar::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3px;
+    border-radius: 0.75rem 0.75rem 0 0;
+    background: var(--accent, var(--grad-neutral));
+  }
+
+  .grad-brand {
+    background: var(--grad-brand);
+  }
+  .grad-critical {
+    background: var(--grad-critical);
+  }
+  .grad-stockout {
+    background: var(--grad-stockout);
+  }
+  .grad-overstock {
+    background: var(--grad-overstock);
+  }
+  .grad-neutral {
+    background: var(--grad-neutral);
+  }
+
+  /* Gradient text for the page title. background-clip: text needs a transparent
+     fill; the color declaration is the fallback if that is unsupported. */
+  .text-gradient {
+    color: #1e293b;
+    background: var(--grad-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}

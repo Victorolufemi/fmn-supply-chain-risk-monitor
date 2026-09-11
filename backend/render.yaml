@@ -1,0 +1,41 @@
+# Render blueprint for the FastAPI backend.
+#
+# Deploy: in Render, New > Blueprint, point at this repository. Render reads this
+# file from the repo root path given below.
+#
+# Two things must be set by hand after the first deploy, because neither belongs
+# in source control:
+#   ANTHROPIC_API_KEY  - your key, added in the Render dashboard (sync: false)
+#   FRONTEND_URL       - the Vercel URL, so CORS allows the deployed frontend
+#
+# The native Python runtime is used rather than Docker: it is faster to deploy,
+# needs no registry, and works on the free tier. backend/Dockerfile is provided
+# for container deployments and local parity.
+services:
+  - type: web
+    name: fmn-supply-chain-api
+    runtime: python
+    plan: free
+    region: frankfurt
+    rootDir: backend
+    # The model is trained during the build, not on first request. The artifact
+    # bundle pickles fitted scikit-learn objects, so building it with the exact
+    # pinned versions avoids version-skew failures at load time.
+    buildCommand: pip install -r requirements.txt && python -m app.ml.training
+    # 0.0.0.0 and $PORT are both required by Render.
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: MODEL_NAME
+        value: claude-sonnet-5
+      - key: LOG_LEVEL
+        value: INFO
+      # Set in the Render dashboard — never committed.
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      # e.g. https://your-app.vercel.app  (comma-separated list is accepted)
+      - key: FRONTEND_URL
+        sync: false

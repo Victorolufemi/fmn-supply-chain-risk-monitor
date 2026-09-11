@@ -1,0 +1,44 @@
+# ---- secrets -----------------------------------------------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+
+# ---- python ------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+
+# ---- node / next -------------------------------------------------------
+node_modules/
+.next/
+out/
+.vercel/
+*.tsbuildinfo
+next-env.d.ts
+npm-debug.log*
+
+# ---- model artifacts ---------------------------------------------------
+# The bundle is rebuilt by `python -m app.ml.training` during the Render build
+# (and by the Docker image build), so it is not source. The generated markdown
+# reports ARE committed: they are part of the written deliverable.
+models/supply_chain/*.joblib
+backend/reports/fold_results.csv
+backend/reports/backtest_predictions.csv
+backend/reports/data_profile.json
+
+# ---- os / editor -------------------------------------------------------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

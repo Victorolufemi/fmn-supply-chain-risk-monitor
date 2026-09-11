@@ -42,3 +42,8 @@ Thumbs.db
 .idea/
 .vscode/
 *.swp
+
+# ---- presentation build artifacts --------------------------------------
+presentation/node_modules/
+presentation/render/
+presentation/package-lock.json

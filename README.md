@@ -139,7 +139,6 @@ fmn-ai-assessment/
 │   ├── components/                     # KPI cards, charts, table, filters, Ask panel
 │   ├── lib/                            # API client, formatting, fetch hook
 │   └── types/api.ts                    # mirrors the backend schemas
-├── presentation/project1_outline.md
 ├── scripts/                            # profiling and diagnostic scripts
 └── .env.example
 ```

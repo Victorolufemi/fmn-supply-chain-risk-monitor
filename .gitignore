@@ -47,3 +47,4 @@ Thumbs.db
 presentation/node_modules/
 presentation/render/
 presentation/package-lock.json
+/presentation
